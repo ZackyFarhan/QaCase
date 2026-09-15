@@ -1,0 +1,47 @@
+ID,Flow,Priority,Type,Title,Preconditions,Steps,Expected Result,Automation Candidate,Status
+SI-001,Flow 0 - Sign In,P0,Functional,Sign in with valid username,Valid active user; network available,Enter valid username; submit; complete Microsoft authentication,Tenant is identified and Microsoft login is opened.,Yes,Not Run
+SI-002,Flow 0 - Sign In,P0,Negative,Unknown username,Unknown username,Enter unknown username; submit,User is not authenticated and a clear failure/retry path is shown.,Yes,Not Run
+SI-003,Flow 0 - Sign In,P1,Validation,Username is empty,Sign-in page open,Submit without username,Submission is blocked and username validation is shown.,Yes,Not Run
+SI-004,Flow 0 - Sign In,P1,Validation,Username with leading/trailing spaces,User exists,Enter username with spaces; submit,Input is normalized or rejected consistently; no incorrect tenant lookup.,Yes,Not Run
+SI-005,Flow 0 - Sign In,P0,Integration,/user/who tenant lookup succeeds,Valid user and backend available,Submit valid username; inspect request/response,/user/who is called and tenant context is resolved.,Yes,Not Run
+SI-006,Flow 0 - Sign In,P0,Integration,/user/me is requested after authentication,Authentication succeeds,Complete Microsoft login; inspect network,/user/me is requested and user profile is loaded.,Yes,Not Run
+SI-007,Flow 0 - Sign In,P0,Integration,/tenant/master is requested,Authentication succeeds,Complete login; inspect network,/tenant/master is requested and master-data bootstrap starts.,Yes,Not Run
+SI-008,Flow 0 - Sign In,P1,Functional,Master data endpoints show progress,Master data endpoints available,Sign in and observe bootstrap,Progress is visible while required master data is loaded.,Yes,Not Run
+SI-009,Flow 0 - Sign In,P1,Functional,First master-data update prompts restart,Fresh account / updated master data,Sign in after first update,App prompts user to restart as specified.,No,Not Run
+SI-010,Flow 0 - Sign In,P1,Resilience,Slow network during bootstrap,Network throttled,Sign in under slow network,Progress remains accurate; UI does not appear frozen; eventually recovers.,No,Not Run
+SI-011,Flow 0 - Sign In,P0,Resilience,Backend bootstrap failure,Simulate failed /user/me or /tenant/master,Sign in; force endpoint failure,Failure is handled safely and user has actionable retry/error state.,Yes,Not Run
+SI-012,Flow 0 - Sign In,P1,Security,Unauthenticated user cannot access protected app,No active session,Open protected route directly,User is redirected to authentication.,Yes,Not Run
+EI-001,Flow 1 - Equipment Inspection,P1,Functional,Open Equipment Inspection list,Authenticated user,Open Equipment Inspection,Previous submissions are displayed and new submission action is available.,Yes,Not Run
+EI-002,Flow 1 - Equipment Inspection,P1,Functional,Create inspection from Form Code,At least one form configuration exists,Start new inspection; select Form Code,Correct dynamic fields are rendered for selected Form Code.,Yes,Not Run
+EI-003,Flow 1 - Equipment Inspection,P1,Functional,Text field renders and accepts input,Form contains text field,Enter valid text,Value is accepted and retained.,Yes,Not Run
+EI-004,Flow 1 - Equipment Inspection,P1,Functional,Date picker renders valid date,Form contains date field,Select a valid date,Selected date is displayed and stored in expected format.,Yes,Not Run
+EI-005,Flow 1 - Equipment Inspection,P1,Functional,Select field options load,Form contains select field,Open select; choose option,Configured options are shown and selection is retained.,Yes,Not Run
+EI-006,Flow 1 - Equipment Inspection,P1,Functional,Radio supports up to four options,Form contains radio field,Inspect options; select each option,Configured options are available and only one option can be selected.,Yes,Not Run
+EI-007,Flow 1 - Equipment Inspection,P1,Functional,Image picker accepts supported image,Form contains image field,Choose/capture valid image,Image is attached and preview/state is shown.,No,Not Run
+EI-008,Flow 1 - Equipment Inspection,P2,Boundary,Form supports 50 fields,Form builder configuration with 50 fields,Open generated form,All 50 configured fields render and remain usable.,Yes,Not Run
+EI-009,Flow 1 - Equipment Inspection,P1,Boundary,Form with more than 50 fields is rejected or constrained,Attempt invalid configuration,Create configuration with 51 fields,System enforces documented maximum of 50.,No,Not Run
+EI-010,Flow 1 - Equipment Inspection,P1,Validation,Required dynamic field cannot be empty,Form has required field,Leave required field blank; submit,Submission is blocked with validation.,Yes,Not Run
+EI-011,Flow 1 - Equipment Inspection,P1,Functional,Valid inspection can be submitted,Valid configured form,Complete all required fields; submit,Submission succeeds and appears in previous submissions.,Yes,Not Run
+EI-012,Flow 1 - Equipment Inspection,P0,Data integrity,Submitted values persist after refresh,Successful submission,Submit; refresh/open detail,Saved values match submitted values.,Yes,Not Run
+EI-013,Flow 1 - Equipment Inspection,P1,Resilience,Inspection submission under poor network,Network throttled,Complete form and submit,User gets clear progress/retry behavior; duplicate record is not created.,No,Not Run
+EI-014,Flow 1 - Equipment Inspection,P1,Offline,Create/edit behavior with no network,Device offline,Open feature; attempt supported offline actions,App follows offline capability without losing entered data.,No,Not Run
+EI-015,Flow 1 - Equipment Inspection,P2,Compatibility,Previously configured form remains readable after configuration change,Existing submission exists,Change form configuration; open old submission,Historical submission remains readable and data is not corrupted.,No,Not Run
+HZ-001,Flow 2 - Safety Hazard Report,P0,Functional,Open Hazard list,Authenticated mobile user,Open Hazard menu,Hazard list is displayed and report action is available.,Yes,Not Run
+HZ-002,Flow 2 - Safety Hazard Report,P0,Validation,Location is mandatory,New hazard form,Leave Location empty; submit,Submission is blocked.,Yes,Not Run
+HZ-003,Flow 2 - Safety Hazard Report,P0,Validation,Sublocation is mandatory,New hazard form,Leave Sublocation empty; submit,Submission is blocked.,Yes,Not Run
+HZ-004,Flow 2 - Safety Hazard Report,P0,Validation,Area is mandatory,New hazard form,Leave Area empty; submit,Submission is blocked.,Yes,Not Run
+HZ-005,Flow 2 - Safety Hazard Report,P2,Functional,Area Description is optional,New hazard form,Leave description empty; fill other mandatory fields,Submission can proceed without Area Description.,Yes,Not Run
+HZ-006,Flow 2 - Safety Hazard Report,P0,Validation,Evidence is mandatory,New hazard form,Leave evidence empty; submit,Submission is blocked.,Yes,Not Run
+HZ-007,Flow 2 - Safety Hazard Report,P0,Functional,PIC is mandatory and preselected to reporter,Authenticated reporter,Open form,PIC defaults to current reporter and can be changed only as permitted.,Yes,Not Run
+HZ-008,Flow 2 - Safety Hazard Report,P0,Functional,Valid hazard can be submitted,Valid location/sublocation/area/evidence/PIC,Complete form; submit,Hazard entry is created and follow-up task is generated.,Yes,Not Run
+HZ-009,Flow 2 - Safety Hazard Report,P0,Integration,PIC receives follow-up notification,Valid hazard submitted,Submit hazard; inspect PIC notifications,PIC receives notification for follow-up task.,No,Not Run
+HZ-010,Flow 2 - Safety Hazard Report,P1,Integration,People in area receive hazard notification,Valid hazard submitted,Submit hazard; inspect area users,People in the area receive hazard notification.,No,Not Run
+HZ-011,Flow 2 - Safety Hazard Report,P1,Functional,Follow-up task opens for PIC,Follow-up task generated,PIC opens task,Task contains required follow-up fields.,Yes,Not Run
+HZ-012,Flow 2 - Safety Hazard Report,P1,Validation,Resolution Date is mandatory,Follow-up task open,Leave Resolution Date empty; submit,Submission is blocked.,Yes,Not Run
+HZ-013,Flow 2 - Safety Hazard Report,P1,Functional,Follow-up evidence can be added,Follow-up task open,Attach evidence,Evidence is accepted and retained.,No,Not Run
+HZ-014,Flow 2 - Safety Hazard Report,P1,Functional,Co Observer can add multiple fields,Follow-up task open,Click +; repeat,Additional Co Observer selectors are added without losing existing selections.,Yes,Not Run
+HZ-015,Flow 2 - Safety Hazard Report,P2,Boundary,Co Observer selections remain unique if duplicates are disallowed,Follow-up task open,Select same observer in multiple fields,System prevents duplicates if uniqueness is required by business rules.,No,Not Run
+HZ-016,Flow 2 - Safety Hazard Report,P0,Functional,Valid follow-up can be submitted,All mandatory follow-up data valid,Fix issue; add Resolution Date; submit,Follow-up is completed and direct supervisor notification is triggered.,Yes,Not Run
+HZ-017,Flow 2 - Safety Hazard Report,P1,Integration,Direct Supervisor receives completion notification,Follow-up successfully submitted,Inspect supervisor notifications,Direct Supervisor receives notification for the completed follow-up.,No,Not Run
+HZ-018,Flow 2 - Safety Hazard Report,P1,Resilience,Duplicate hazard is not created on retry,Poor network / retry,Submit hazard; retry after timeout,At most one hazard entry is created for one logical submission.,No,Not Run
+HZ-019,Flow 2 - Safety Hazard Report,P1,Offline,Hazard behavior with no network,Device offline,Create/report hazard according to supported offline flow,User data is retained and sync behavior follows product rules.,No,Not Run
